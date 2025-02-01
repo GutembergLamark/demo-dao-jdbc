@@ -55,17 +55,9 @@ public class SellerDaoJDBC implements SellerDAO {
 			result = statement.executeQuery();
 			
 			if(result.next()) {
-				Department department = new Department();
-				department.setId(result.getInt("DepartmentId"));
-				department.setName(result.getString("DepName"));
+				Department department = instantiateDepartment(result);
 				
-				Seller seller = new Seller();
-				seller.setId(result.getInt("Id"));
-				seller.setName(result.getString("Name"));
-				seller.setEmail(result.getString("Email"));
-				seller.setBrithDate(result.getDate("BirthDate"));
-				seller.setBaseSalary(result.getDouble("BaseSalary"));
-				seller.setDepartment(department);
+				Seller seller = instantiateSeller(result, department);
 				
 				return seller;
 			}
@@ -78,6 +70,26 @@ public class SellerDaoJDBC implements SellerDAO {
 			DB.closeStatement(statement);
 			DB.closeResultSet(result);
 		}
+	}
+
+	private Seller instantiateSeller(ResultSet result, Department department) throws SQLException {
+		Seller seller = new Seller();
+		seller.setId(result.getInt("Id"));
+		seller.setName(result.getString("Name"));
+		seller.setEmail(result.getString("Email"));
+		seller.setBrithDate(result.getDate("BirthDate"));
+		seller.setBaseSalary(result.getDouble("BaseSalary"));
+		seller.setDepartment(department);
+		
+		return seller;
+	}
+
+	private Department instantiateDepartment(ResultSet result) throws SQLException {
+		Department department = new Department();
+		department.setId(result.getInt("DepartmentId"));
+		department.setName(result.getString("DepName"));
+		
+		return department;
 	}
 
 	@Override
